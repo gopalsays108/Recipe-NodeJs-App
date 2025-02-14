@@ -1,6 +1,10 @@
+require('dotenv').config();
 const express = require("express");
 // const path = require('path');
 const recipeRouter = require("./routers/recipes")
+const usersRouter = require('./routers/user');
+const auth = require('./middleware/auth.js');
+
 const cors = require("cors");
 const { handleError } = require('./utils/error');
 
@@ -25,12 +29,16 @@ app.use((req,res,next) => {
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(auth.initialize());
+
 
 app.get("/", (req, res) => {
     res.redirect("/api/v1/recipes");
   });
   
 app.use("/api/v1/recipes", recipeRouter)
+app.use("/api/v1/users", usersRouter);
+
 
 app.use(handleError);
 
